@@ -1,4 +1,4 @@
-import System.Win32 (xBUTTON1)
+import System.Win32 (xBUTTON1, dACL_SECURITY_INFORMATION)
 import Control.Monad.Trans.Cont (reset)
 -- # 2. labor
 
@@ -8,6 +8,8 @@ import Control.Monad.Trans.Cont (reset)
 szjSzorzat 0 = 1
 szjSzorzat x = mod x 10 * szjSzorzat (div x 10)
 
+ls1 = [324, 56, 89, 80, -1234]
+szjSzorzatLs  = map szjSzorzat2 ls1
 szjSzorzat2 x
     | x<0 = szjSzorzat2 (abs x)
     | div x 10 == 0 = x
@@ -56,6 +58,11 @@ legnagyobbSzj x = max1 x 0
         max1 0 maxSzj = maxSzj
         max1 szam maxSzj = if mod szam 10 > maxSzj then max1 (div szam 10)(mod szam 10) else max1 (div szam 10) maxSzj
 -- - egy szám $b$ számrendszerbeli alakjában a $d$-vel egyenlő számjegyek számát (például a $b = 10$-es számrendszerben a $d = 2$-es számjegyek száma),
+bSzamdSzj n b d
+    |n < 0 = error "neg. szam"
+    |n<b = if n == d then 1 else 0
+    |otherwise = if mod n b ==d then 1 + bSzamdSzj (div n b) b d else bSzamdSzj (div n b) b d
+
 --   Példák függvényhívásokra:
 
 --   ```haskell
@@ -65,6 +72,10 @@ legnagyobbSzj x = max1 x 0
 --   fugv 345281 16 4 -> 2
 --   ```
 -- - az 1000-ik Fibonacci számot.
+fiboN n = fibo 0 1 0 n
+    where
+        fibo _ _ res 0 = res
+        fibo a b res n1 = fibo b res (b + res) (n1-1)
 
 -- II. Alkalmazzuk a map függvényt a I.-nél megírt függvényekre.
 

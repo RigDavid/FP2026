@@ -17,8 +17,12 @@ atlag ls = (sum ls) / fromIntegral (length ls)
 -- II. Könyvtárfüggvények használata nélkül írjuk meg azt a Haskell függvényt, amely
 
 -- - meghatározza egy lista elemszámát, 2 módszerrel (myLength),
-myLength ls=
+myLength [] = 0
+myLength (_:xs) = 1 + myLength xs
+
 -- - összeszorozza a lista elemeit, 2 módszerrel (myProduct),
+myProduct [] = 1
+myProduct (x:xs) = x * myProduct xs
 -- - meghatározza egy lista legkisebb elemét (myMinimum),
 -- - meghatározza egy lista legnagyobb elemét (myMaximum),
 -- - meghatározza egy lista n-ik elemét (!!),
