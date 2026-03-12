@@ -68,7 +68,35 @@ legnagyobbSzj x = max1 x 0
 --   fugv 1023 2 1 -> 10
 --   fugv 345281 16 4 -> 2
 --   ```
+
+bSzamDSzj n b d
+  | n < 0 = bSzamDSzj (abs n) b d
+  | n < b = if n == d then 1 else 0
+  | otherwise = if mod n b == d then 1 + bSzamDSzj (div n b) b d else bSzamDSzj (div n b) b d
+
+ls3 = [(7673573, 10, 7), (1024, 2, 1), (1023, 2, 1), (345281, 16, 4)]
+
+bSzamDSzjLs = map (\(n, b, d) -> bSzamDSzj n b d) ls3
+
+-- bSzamDSzjLs2 = map (uncurry bSzamDSzj) ls3 -- hibat ad, mivel az uncurry kételemű tuple értékekkel működik
+
 -- - az 1000-ik Fibonacci számot.
+fiboN n = fiboSg 0 1 0 n
+  where
+    fiboSg a b res n
+      | n == 0 = res
+      | otherwise = fiboSg b res (res + b) (n - 1)
+
+fibo _ _ res 0 = res
+fibo a b res n = fibo b res (res + b) (n - 1)
+
+fiboN2 n = fibo 0 1 0 1000
+
+fiboSzamok n = map (fibo 0 1 0) [0 .. n]
+
+fiboSzamok2 n = map (\x -> fibo 0 1 0 x) [0 .. n]
+
+fiboN3 n = fiboSzamok n !! n
 
 -- II. Alkalmazzuk a map függvényt a I.-nél megírt függvényekre.
 
