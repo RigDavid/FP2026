@@ -43,10 +43,19 @@ paratlanosztok x = last [i | i<- [1..x], mod x i==0 && mod i 2==1]
 -- - meghatározza, hogy egy tízes számrendszerbeli szám p számrendszerben, hány számjegyet tartalmaz,
 -- - meghatározza, hogy egy tízes számrendszerbeli szám p számrendszerbeli alakjában melyik a legnagyobb számjegy,
 -- - meghatározza az $a$ és $b$ közötti Fibonacci számokat, $a > 50$.
+fibo2 a b = filter(\x -> x > a && x < b) (fibo2 0 1 0)
+    where
+        fibo2 a1 b1 res
+            | res < b = res : fibo2 b1 res (res+b1)
+            | otherwise =[res]
 
 -- III. Könyvtárfüggvények használata nélkül írjuk meg azt a Haskell függvényt, amely
 
 -- - meghatározza egy lista pozitív elemeinek átlagát,
+lsAtlag ls = osszeg / hossz
+  where
+    osszeg = sum ls
+    hossz = fromIntegral (length ls)
 -- - meghatározzuk azt a listát, amely tartalmazza az eredeti lista minden n-ik elemét,
 -- - tükrözi egy lista elemeit,
 -- - két módszerrel is meghatározza egy lista legnagyobb elemeinek pozícióit: a lista elemeit kétszer járja be, illetve úgy hogy a lista elemeit csak egyszer járja be,
