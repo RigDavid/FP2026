@@ -1,5 +1,6 @@
-import Data.List 
-import Data.Char 
+import Data.List
+import Data.Char
+import Data.Ord 
 -- 1. Egy [(String, Int)] típusú lista eleme egy városnevet és a megfelelő népesség
 -- értéket tárolja. Írjunk egy Haskell függvényt, amely meghatározza, azokat a
 -- városokat, amelyek népesség értéke egy adott n értéknél nagyobb. A kapott
@@ -17,11 +18,25 @@ import Data.Char
 -- ● Amennyiben nincs olyan város, amelyiknek a népesség értéke egy adott n
 -- értéknél nagyobb, a következő a kimenet: “Nincs x erteknel nagyobb nepesseg
 -- ertekkel rendelkezo varos.”
+fel1 n ls = map fst (filter (\(x,y) -> y > n) ls)
+
+fel1Main = do 
+    let n = 150000
+        ls =  [("sepsiszentgyorgy", 54000), ("kolozsvár", 330000), 
+            ("marosvasarhely", 130000), ("temesvar", 310000), ("arad", 160000), 
+            ("gyergyoszentmiklos", 18000), ("nagyvarad",196000)]
+        ls2 = sort $ fel1 n ls 
+    if ls2 == []
+        then putStrLn ("Nincs " ++ show n ++ " erteknel nagyobb nepesseg ertekkel rendelkezo varos.")
+        else do 
+            putStrLn ("A(z) " ++ show n ++ " nepesseg erteknel nagyobbal rendelkezo varosok a kovetkezok:")
+            mapM_ (\v -> putStrLn ("- " ++ v)) ls2 
+
 varosNepessegLs = [("sepsiszentgyorgy", 54000), ("kolozsvár", 330000),
                 ("marosvasarhely", 130000), ("temesvar", 310000), ("arad", 160000),
                 ("gyergyoszentmiklos", 18000), ("nagyvarad",196000)]
 
-fel1 = do 
+fel1_1 = do 
     let ls = [("sepsiszentgyorgy", 54000), ("kolozsvár", 330000),
                 ("marosvasarhely", 130000), ("temesvar", 310000), ("arad", 160000),
                 ("gyergyoszentmiklos", 18000), ("nagyvarad",196000)]
@@ -43,16 +58,27 @@ fel1 = do
 -- képernyőre.
 -- Például:
 -- ● Bemenet: [17603, 4005, 3223, 816252, 70, 23561, 9018007, 807, 61, 300]
--- ● Kimenet: A 0 szamjegyet nem tartalmazo szamok a kovetkezok: 3223 816252
--- 23561 61
--- ● Amennyiben nincsenek ilyen számok, a kimenet a következő: “Nincsenek
--- olyan szamok, amelyek nem tartalmazzak a 0 szamjegyet.”
-nincsNulla n 
+-- ● Kimenet: A 0 szamjegyet nem tartalmazo szamok a kovetkezok: 3223 816252 23561 61
+{- ● Amennyiben nincsenek ilyen számok, a kimenet a következő: “Nincsenek
+olyan szamok, amelyek nem tartalmazzak a 0 szamjegyet.” -}
+nincsNulla x = not ('0' `elem` show x)
+nincsNulla2 x = '0' `notElem` show x
+
+fel2 = do 
+    let ls = [17603, 4005, 3223, 816252, 70, 23561, 9018007, 807, 61, 300]
+        ls2 = [102,103,104]
+        jo = filter nincsNulla2 ls
+    if jo == [] 
+        then putStrLn "Nincsenek olyan szamok, amelyek nem tartalmazzak a 0 szamjegyet."
+        else putStrLn ("A 0 szamjegyet nem tartalmazo szamok a kovetkezok: " ++ 
+                        intercalate " " (map show jo)) -- vagy intercalate " " helyett unwords
+
+nincsNulla_1 n 
     | mod n 10 == 0 = False 
     | n < 10 = True 
     | otherwise = nincsNulla (div n 10)
 
-fel2 = do 
+fel2_1 = do 
     let ls = [17603, 4005, 3223, 816252, 70, 23561, 9018007, 807, 61, 300]
         ls1 = filter nincsNulla ls 
         ls2 = filter (notElem '0' . show) ls 
@@ -63,7 +89,6 @@ fel2 = do
                         ++ (intercalate " " (map show ls1)))
             putStrLn ("A 0 szamjegyet nem tartalmazo szamok a kovetkezok: " 
                         ++ unwords (map show ls2))
-
 
 -- 3. Egy listában karakterláncok vannak, írjunk egy Haskell programot, amely kiírja
 -- azokat a karakterláncokat a képernyőre egymás alá rendezve ábécé
@@ -80,7 +105,18 @@ fel2 = do
 -- monad
 -- ● Amennyiben nincsenek ilyen karakterláncok, a kimenet a következő:
 -- “Nincsenek olyan karakterlancok, amelyek nem tartalmaznak szamot.”
+nincsSzam x = not (any isDigit x)
+
 fel3 = do 
+    let ls = ["2023tuple", "function", "float", "higher-order", "variable10", "may13be", "0recursion", "monad", "class"]
+        jo = sort $ filter nincsSzam ls 
+    if jo == [] 
+        then putStrLn "Nincsenek olyan karakterlancok, amelyek nem tartalmaznak szamot."
+        else do 
+            putStrLn "A karakterlancok, amelyek nem tartalmaznak szamokat:"
+            mapM_ putStrLn jo -- vagy atadaskor is lehet rendezni 
+
+fel3_1 = do 
     let ls = ["2023tuple", "function", "float", "higher-order", 
             "variable10", "may13be", "0recursion", "monad", "class"]
         ls2 = filter (\i -> not (any isDigit2 i)) ls -- rendezes a kiirataskor vagy filter ele sort $
@@ -93,8 +129,6 @@ fel3 = do
             putStrLn "A karakterlancok, amelyek nem tartalmaznak szamokat:"
             putStrLn $ intercalate "\n" (sort ls2) 
             mapM_ putStrLn (sort ls2) 
-
-
 
 -- 4. Írjunk egy Haskell programot, amely meghatározza, hogy az s karakterláncnak
 -- melyek a szomszédjai az lsS karakterláncokat tartalmazó listából, ahol egy
@@ -118,6 +152,21 @@ fel3 = do
 -- - iphone3
 -- - huaweiS1
 -- - samsungA1
+snd3Elem (_,y,_) = y 
+fst3Elem (x, _, _) = x 
+
+fel5 = do 
+    let ls = [("iphoneS1", 20, 2500), ("huaweiS1", 30, 1700), 
+            ("huaweiS2", 25,3100), ("samsungA1", 30, 2000), ("nokia", 10, 1900), ("iphoneS2", 10, 2200),
+            ("samsungA2", 15, 1650), ("iphone3", 30, 1800), ("iphone5", 30, 1800)]
+    let ls2 = reverse $ sortOn snd3Elem ls 
+        ls3 = sort ls -- elso elem szerint rendez 
+        ls4 = sortOn (Down . snd3Elem) ls 
+        maxErtek = snd3Elem (head ls2) 
+        megoldas = map fst3Elem $ takeWhile (\(_,e,_) -> e == maxErtek) ls2 
+    putStrLn ("A maximalis eladasi ertek " ++ show maxErtek ++ 
+                ". A telefonok, amelyeknek ennyi az eladasi erteke a kovetkezok:")
+    mapM_ putStrLn megoldas 
 
 -- 6. Írj egy Haskell függvényt, melynek egy lista a bemenete, és megadja azokat a
 -- számokat, amelyek előfordulási száma páratlan. Az eredményt írasd ki a
